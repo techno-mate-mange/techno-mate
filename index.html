@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techno Mate | المرجع التقني</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --primary-cyan: #00f2ff;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #e0e0e0;
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Header & Logo */
+        .header { margin-bottom: 30px; position: relative; }
+        .logo-container {
+            position: relative;
+            display: inline-block;
+        }
+        .main-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-cyan);
+            box-shadow: 0 0 20px var(--primary-cyan);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--primary-cyan); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px var(--primary-cyan); }
+            100% { transform: scale(1); box-shadow: 0 0 10px var(--primary-cyan); }
+        }
+
+        /* Tabs System */
+        .tabs-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        .tab-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+        .tab-btn.active {
+            background: var(--primary-cyan);
+            color: black;
+            font-weight: bold;
+        }
+
+        /* Content Sections */
+        .tab-content { display: none; animation: fadeIn 0.5s ease; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Links Card Style */
+        .link-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            transition: 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        .link-card:hover {
+            transform: translateX(-5px);
+            background: rgba(0, 242, 255, 0.1);
+            border-color: var(--primary-cyan);
+        }
+        .link-card i { font-size: 1.5rem; margin-left: 15px; color: var(--primary-cyan); }
+
+        /* Team Badges */
+        .team-group { margin-bottom: 20px; text-align: right; }
+        .team-title { color: var(--primary-cyan); font-size: 0.8rem; margin-bottom: 10px; border-bottom: 1px solid var(--glass-border); }
+        .member { display: flex; justify-content: space-between; padding: 8px; background: rgba(255,255,255,0.03); border-radius: 5px; margin-bottom: 5px; }
+        .founder { border-right: 3px solid var(--gold); }
+        .co-founder { border-right: 3px solid var(--silver); }
+        .manager { border-right: 3px solid var(--bronze); }
+
+        /* Admin/Discord Lock */
+        .lock-screen { padding: 40px 20px; }
+        input[type="password"], textarea, input[type="text"] {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--primary-cyan);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .btn-submit {
+            background: var(--primary-cyan);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* XP System Footer */
+        .xp-bar {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background: var(--glass-bg);
+            padding: 5px 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--glass-border);
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="container">
+    <div class="header">
+        <div class="logo-container">
+            <img src="https://i.ibb.co/hR7v0V7/1000105841.webp" alt="Techno Mate" class="main-logo">
+        </div>
+        <h1 style="margin-top: 15px; letter-spacing: 2px;">TECHNO MATE</h1>
+        <p style="color: var(--primary-cyan); font-size: 0.9rem;">JOIN US. CREATE. LEARN. SUCCEED.</p>
+    </div>
+
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="openTab('about')">عنا</button>
+        <button class="tab-btn" onclick="openTab('links')">روابط</button>
+        <button class="tab-btn" onclick="openTab('projects')">مشاريع</button>
+        <button class="tab-btn" onclick="openTab('team')">الفريق</button>
+        <button class="tab-btn" onclick="openTab('suggest')">اقتراحات</button>
+        <button class="tab-btn" onclick="openTab('admin')"><i class="fas fa-shield-halved"></i></button>
+    </div>
+
+    <div id="about" class="tab-content active">
+        <div class="link-card" style="flex-direction: column; align-items: flex-end;">
+            <h3>نبذة عن المجتمع</h3>
+            <p style="font-size: 0.9rem; margin-top: 10px; line-height: 1.6;">
+                تكنو ميت هو مجتمع تقني يسعى لتمكين المبرمجين وصناع المحتوى من خلال التعاون المشترك ومشاركة الخبرات في بيئة متطورة.
+            </p>
+        </div>
+    </div>
+
+    <div id="links" class="tab-content">
+        <a href="https://discord.gg/MtGN8V9fGz" class="link-card">
+            <i class="fab fa-discord"></i>
+            <span>ديسكورد | Discord</span>
+        </a>
+        <a href="https://www.reddit.com/r/Tech_Mate/" class="link-card">
+            <i class="fab fa-reddit"></i>
+            <span>رديت | Reddit</span>
+        </a>
+        <a href="https://t.me/techno_mate" class="link-card">
+            <i class="fab fa-telegram"></i>
+            <span>تلغرام | Telegram</span>
+        </a>
+        <a href="https://github.com/techno-mate-mange" class="link-card">
+            <i class="fab fa-github"></i>
+            <span>قيت هب | GitHub</span>
+        </a>
+    </div>
+
+    <div id="projects" class="tab-content">
+        <div class="link-card">
+            <i class="fas fa-code-branch"></i>
+            <div style="text-align: right;">
+                <h4>Techno Mate Manage</h4>
+                <p style="font-size: 0.8rem;">نظام إدارة المجتمعات البرمجية</p>
+            </div>
+        </div>
+        <p>قريباً سيتم عرض المزيد من المشاريع...</p>
+    </div>
+
+    <div id="team" class="tab-content">
+        <div class="team-group">
+            <div class="team-title">المؤسسين</div>
+            <div class="member founder"><span>غيث</span> <i class="fas fa-crown" style="color: var(--gold);"></i></div>
+        </div>
+        <div class="team-group">
+            <div class="team-title">المؤسسين المشاركين</div>
+            <div class="member co-founder"><span>لين</span></div>
+            <div class="member co-founder"><span>رشيد</span></div>
+            <div class="member co-founder"><span>جابر</span></div>
+        </div>
+        <div class="team-group">
+            <div class="team-title">المدراء</div>
+            <div class="member manager"><span>لورا</span></div>
+            <div class="member manager"><span>خليل</span></div>
+            <div class="member manager"><span>سامر</span></div>
+        </div>
+    </div>
+
+    <div id="suggest" class="tab-content">
+        <div class="link-card" style="display: block;">
+            <h4>أرسل اقتراحك</h4>
+            <input type="text" placeholder="عنوان الاقتراح" style="margin-top:10px">
+            <textarea placeholder="اشرح فكرتك هنا..." rows="4"></textarea>
+            <button class="btn-submit">إرسال الاقتراح</button>
+        </div>
+    </div>
+
+    <div id="admin" class="tab-content">
+        <div id="lock-screen" class="lock-screen">
+            <i class="fas fa-lock" style="font-size: 3rem; color: var(--primary-cyan); margin-bottom: 20px;"></i>
+            <input type="password" id="admin-pass" placeholder="كلمة المرور">
+            <button class="btn-submit" onclick="checkPass()">فتح التبويب</button>
+        </div>
+        <div id="admin-content" style="display: none;">
+            <h4>لوحة التحكم والديسكورد</h4>
+            <div style="margin-top: 20px;">
+                <iframe src="https://discord.com/widget?id=1416343890989944834&theme=dark" width="100%" height="400" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="xp-bar">
+    <span id="rank-display">الرتبة: Explorer</span>
+    <span id="xp-display">XP: 0</span>
+</div>
+
+<script>
+    // Background Animation Logic
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function initCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 2;
+            this.speedX = Math.random() * 0.5 - 0.25;
+            this.speedY = Math.random() * 0.5 - 0.25;
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.x > canvas.width) this.x = 0;
+            if (this.x < 0) this.x = canvas.width;
+            if (this.y > canvas.height) this.y = 0;
+            if (this.y < 0) this.y = canvas.height;
+        }
+        draw() {
+            ctx.fillStyle = '#00f2ff33';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function createParticles() {
+        for (let i = 0; i < 80; i++) particles.push(new Particle());
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
+
+    // Tabs Logic
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+        addXP(5);
+    }
+
+    // Password Check
+    function checkPass() {
+        const pass = document.getElementById('admin-pass').value;
+        if (pass === 'techno_mate_admin') {
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('admin-content').style.display = 'block';
+            addXP(50);
+        } else {
+            alert('كلمة مرور خاطئة!');
+        }
+    }
+
+    // XP System
+    let xp = parseInt(localStorage.getItem('tm_xp')) || 0;
+    function addXP(amount) {
+        xp += amount;
+        localStorage.setItem('tm_xp', xp);
+        updateXPDisplay();
+    }
+
+    function updateXPDisplay() {
+        document.getElementById('xp-display').innerText = `XP: ${xp}`;
+        let rank = "Explorer";
+        if (xp > 100) rank = "Member";
+        if (xp > 500) rank = "Techno Master";
+        document.getElementById('rank-display').innerText = `الرتبة: ${rank}`;
+    }
+
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+    createParticles();
+    animate();
+    updateXPDisplay();
+</script>
+
+</body>
+</html>
